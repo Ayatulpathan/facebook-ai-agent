@@ -81,6 +81,18 @@ class BaseMetaClient:
     def get_page_insights(self) -> Dict[str, Any]:
         raise NotImplementedError
 
+    def reply_to_comment(self, comment_id: str, message: str) -> Dict[str, Any]:
+        raise NotImplementedError
+
+    def send_messenger_message(self, recipient_id: str, message: str) -> Dict[str, Any]:
+        raise NotImplementedError
+
+    def get_messenger_conversations(self) -> List[Dict[str, Any]]:
+        raise NotImplementedError
+
+    def get_conversation_messages(self, thread_id: str) -> List[Dict[str, Any]]:
+        raise NotImplementedError
+
 
 class LiveMetaClient(BaseMetaClient):
     """Official Meta Graph API v20.0 Client."""
@@ -253,6 +265,51 @@ class LiveMetaClient(BaseMetaClient):
             data = self._handle_response(resp)
             return data
 
+    def reply_to_comment(self, comment_id: str, message: str) -> Dict[str, Any]:
+        url = f"{self.base_url}/{comment_id}/comments"
+        payload = {"message": message}
+        with httpx.Client(timeout=self.timeout) as client:
+            resp = client.post(url, headers=self._headers(), data=payload)
+            data = self._handle_response(resp)
+            reply_id = data.get("id")
+            return {
+                "success": True,
+                "meta_reply_id": reply_id,
+                "sent_at": datetime.now(timezone.utc).isoformat()
+            }
+
+    def send_messenger_message(self, recipient_id: str, message: str) -> Dict[str, Any]:
+        url = f"{self.base_url}/me/messages"
+        payload = {
+            "recipient": {"id": recipient_id},
+            "message": {"text": message}
+        }
+        with httpx.Client(timeout=self.timeout) as client:
+            resp = client.post(url, headers=self._headers(), json=payload)
+            data = self._handle_response(resp)
+            msg_id = data.get("message_id")
+            return {
+                "success": True,
+                "meta_message_id": msg_id,
+                "sent_at": datetime.now(timezone.utc).isoformat()
+            }
+
+    def get_messenger_conversations(self) -> List[Dict[str, Any]]:
+        url = f"{self.base_url}/{self.page_id}/conversations"
+        params = {"fields": "id,snippet,updated_time,senders", "limit": 20}
+        with httpx.Client(timeout=self.timeout) as client:
+            resp = client.get(url, headers=self._headers(), params=params)
+            data = self._handle_response(resp)
+            return data.get("data", [])
+
+    def get_conversation_messages(self, thread_id: str) -> List[Dict[str, Any]]:
+        url = f"{self.base_url}/{thread_id}/messages"
+        params = {"fields": "id,message,created_time,from", "limit": 50}
+        with httpx.Client(timeout=self.timeout) as client:
+            resp = client.get(url, headers=self._headers(), params=params)
+            data = self._handle_response(resp)
+            return data.get("data", [])
+
 
 class MockMetaClient(BaseMetaClient):
     """
@@ -374,6 +431,74 @@ class MockMetaClient(BaseMetaClient):
             "page_post_engagements": 395,
             "page_video_views": 1820
         }
+
+    def reply_to_comment(self, comment_id: str, message: str) -> Dict[str, Any]:
+        timestamp = int(datetime.now(timezone.utc).timestamp())
+        return {
+            "success": True,
+            "meta_reply_id": f"mock_comment_reply_{comment_id}_{timestamp}",
+            "sent_at": datetime.now(timezone.utc).isoformat()
+        }
+
+    def send_messenger_message(self, recipient_id: str, message: str) -> Dict[str, Any]:
+        timestamp = int(datetime.now(timezone.utc).timestamp())
+        return {
+            "success": True,
+            "meta_message_id": f"mock_msg_out_{recipient_id}_{timestamp}",
+            "sent_at": datetime.now(timezone.utc).isoformat()
+        }
+
+    def get_messenger_conversations(self) -> List[Dict[str, Any]]:
+        now = datetime.now(timezone.utc).isoformat()
+        return [
+            {
+                "id": "thread_mock_001",
+                "snippet": "ভাইয়া এই প্রোডাক্টটা কি স্টকে আছে? ডেলিভারি কত দিন লাগবে?",
+                "updated_time": now,
+                "senders": {"data": [{"name": "Farhan Ahmed", "id": "cust_mock_001"}]}
+            },
+            {
+                "id": "thread_mock_002",
+                "snippet": "Hello! Can you please confirm the warranty and delivery charge to Sylhet?",
+                "updated_time": now,
+                "senders": {"data": [{"name": "Tanvir Hasan", "id": "cust_mock_002"}]}
+            },
+            {
+                "id": "thread_mock_003",
+                "snippet": "আমি ২টি অর্ডার করতে চাই, ফোন নাম্বার: 01711223344",
+                "updated_time": now,
+                "senders": {"data": [{"name": "Nusrat Jahan", "id": "cust_mock_003"}]}
+            }
+        ]
+
+    def get_conversation_messages(self, thread_id: str) -> List[Dict[str, Any]]:
+        now = datetime.now(timezone.utc).isoformat()
+        if thread_id == "thread_mock_003":
+            return [
+                {
+                    "id": "msg_003_1",
+                    "message": "আমি ২টি অর্ডার করতে চাই, ফোন নাম্বার: 01711223344",
+                    "created_time": now,
+                    "from": {"name": "Nusrat Jahan", "id": "cust_mock_003"}
+                }
+            ]
+        elif thread_id == "thread_mock_002":
+            return [
+                {
+                    "id": "msg_002_1",
+                    "message": "Hello! Can you please confirm the warranty and delivery charge to Sylhet?",
+                    "created_time": now,
+                    "from": {"name": "Tanvir Hasan", "id": "cust_mock_002"}
+                }
+            ]
+        return [
+            {
+                "id": "msg_001_1",
+                "message": "ভাইয়া এই প্রোডাক্টটা কি স্টকে আছে? ডেলিভারি কত দিন লাগবে?",
+                "created_time": now,
+                "from": {"name": "Farhan Ahmed", "id": "cust_mock_001"}
+            }
+        ]
 
 
 def build_meta_oauth_url(app_id: str, redirect_uri: str, state: str = "local_auth") -> str:

@@ -4,7 +4,7 @@ import httpx
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.models.models import (
-    Content, Approval, Message, ReplyDraft, Lead, PageConnection, AppSetting, PublishingQueue
+    Content, Approval, Message, ReplyDraft, Lead, PageConnection, AppSetting, PublishingQueue, FacebookComment
 )
 from app.schemas.schemas import PostStatusCounts, DashboardOverview, SystemHealthResponse
 from app.core.config import settings
@@ -67,6 +67,7 @@ def get_dashboard_overview(db: Session) -> DashboardOverview:
     """Assemble all dashboard metrics."""
     post_counts = get_post_status_counts(db)
     pending_approvals = db.query(Approval).filter(Approval.status == "PENDING").count()
+    pending_comments = db.query(FacebookComment).filter(FacebookComment.reply_status == "PENDING").count()
     pending_replies = db.query(ReplyDraft).filter(ReplyDraft.approval_status == "PENDING").count()
     new_leads = db.query(Lead).filter(Lead.follow_up_status == "New").count()
     
@@ -99,7 +100,7 @@ def get_dashboard_overview(db: Session) -> DashboardOverview:
     return DashboardOverview(
         post_counts=post_counts,
         pending_approvals_count=pending_approvals,
-        pending_comments_count=0, # Populated in Phase 6
+        pending_comments_count=pending_comments,
         pending_messages_count=pending_replies,
         new_leads_count=new_leads,
         ai_status=ai_status,

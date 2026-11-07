@@ -470,7 +470,190 @@ export const api = {
       headers: getAuthHeaders()
     })
     return handleResponse<any>(res)
+  },
+
+  // Phase 6: Comments
+  async getComments(category?: string, replyStatus?: string, search?: string): Promise<CommentItem[]> {
+    const params = new URLSearchParams()
+    if (category) params.append('category', category)
+    if (replyStatus) params.append('reply_status', replyStatus)
+    if (search) params.append('search', search)
+    const res = await fetch(`${API_BASE}/comments/?${params.toString()}`, { headers: getAuthHeaders() })
+    return handleResponse<CommentItem[]>(res)
+  },
+
+  async syncComments(postId?: string): Promise<any> {
+    const url = postId ? `${API_BASE}/comments/sync?post_id=${encodeURIComponent(postId)}` : `${API_BASE}/comments/sync`
+    const res = await fetch(url, { method: 'POST', headers: getAuthHeaders() })
+    return handleResponse<any>(res)
+  },
+
+  async approveCommentReply(commentId: number, replyText?: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/comments/${commentId}/approve`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ reply_text: replyText })
+    })
+    return handleResponse<any>(res)
+  },
+
+  async rejectCommentReply(commentId: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/comments/${commentId}/reject`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Phase 6: Messenger
+  async getMessengerConversations(): Promise<ConversationSummary[]> {
+    const res = await fetch(`${API_BASE}/messenger/conversations`, { headers: getAuthHeaders() })
+    return handleResponse<ConversationSummary[]>(res)
+  },
+
+  async getMessengerThread(conversationId: number): Promise<ConversationDetail> {
+    const res = await fetch(`${API_BASE}/messenger/conversations/${conversationId}`, { headers: getAuthHeaders() })
+    return handleResponse<ConversationDetail>(res)
+  },
+
+  async syncMessenger(): Promise<any> {
+    const res = await fetch(`${API_BASE}/messenger/sync`, { method: 'POST', headers: getAuthHeaders() })
+    return handleResponse<any>(res)
+  },
+
+  async approveMessengerDraft(draftId: number, replyText?: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/messenger/drafts/${draftId}/approve`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ reply_text: replyText })
+    })
+    return handleResponse<any>(res)
+  },
+
+  async rejectMessengerDraft(draftId: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/messenger/drafts/${draftId}/reject`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Phase 6: Leads
+  async getLeads(status?: string, search?: string): Promise<LeadItem[]> {
+    const params = new URLSearchParams()
+    if (status) params.append('status', status)
+    if (search) params.append('search', search)
+    const res = await fetch(`${API_BASE}/leads/?${params.toString()}`, { headers: getAuthHeaders() })
+    return handleResponse<LeadItem[]>(res)
+  },
+
+  async getLeadMetrics(): Promise<LeadMetrics> {
+    const res = await fetch(`${API_BASE}/leads/metrics`, { headers: getAuthHeaders() })
+    return handleResponse<LeadMetrics>(res)
+  },
+
+  async createLead(lead: Partial<LeadItem>): Promise<LeadItem> {
+    const res = await fetch(`${API_BASE}/leads/`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(lead)
+    })
+    return handleResponse<LeadItem>(res)
+  },
+
+  async updateLead(leadId: number, update: Partial<LeadItem>): Promise<LeadItem> {
+    const res = await fetch(`${API_BASE}/leads/${leadId}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(update)
+    })
+    return handleResponse<LeadItem>(res)
+  },
+
+  getLeadsCsvDownloadUrl(): string {
+    return `${API_BASE}/leads/export/csv`
   }
+}
+
+export interface CommentItem {
+  id: number
+  post_id: number | null
+  meta_post_id: string
+  meta_comment_id: string
+  sender_name: string
+  sender_id: string
+  comment_text: string
+  category: string
+  suggested_reply: string
+  reply_status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'SENT' | string
+  approved_reply_text: string
+  is_lead: boolean
+  sent_at: string | null
+  created_at: string
+}
+
+export interface ConversationSummary {
+  id: number
+  meta_thread_id: string
+  sender_name: string
+  sender_id: string
+  platform: string
+  status: string
+  updated_at: string
+  latest_message: string
+  latest_message_sender: string
+  has_pending_approval: boolean
+  pending_drafts_count: number
+}
+
+export interface ConversationDetail {
+  conversation: {
+    id: number
+    meta_thread_id: string
+    sender_name: string
+    sender_id: string
+    updated_at: string
+  }
+  messages: Array<{
+    id: number
+    sender_type: string
+    message_text: string
+    timestamp: string
+    draft?: {
+      id: number
+      suggested_reply: string
+      detected_intent: string
+      approval_status: string
+    }
+  }>
+  pending_draft?: {
+    id: number
+    message_id: number
+    suggested_reply: string
+    detected_intent: string
+    approval_status: string
+    created_at: string
+  }
+}
+
+export interface LeadItem {
+  id: number
+  customer_name: string
+  facebook_reference: string
+  contact_info: string
+  inquiry_type: string
+  product_interest: string
+  follow_up_status: 'New' | 'Contacted' | 'Qualified' | 'Closed' | string
+  notes: string
+  created_at: string
+}
+
+export interface LeadMetrics {
+  total: number
+  new: number
+  contacted: number
+  qualified: number
+  closed: number
 }
 
 export interface FacebookPermission {

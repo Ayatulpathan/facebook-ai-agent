@@ -17,6 +17,9 @@ import { MediaLibraryPage } from './pages/MediaLibraryPage'
 import { CalendarPage } from './pages/CalendarPage'
 import { ApprovalCenterPage } from './pages/ApprovalCenterPage'
 import { FacebookPage } from './pages/FacebookPage'
+import { CommentsPage } from './pages/CommentsPage'
+import { MessengerPage } from './pages/MessengerPage'
+import { LeadsPage } from './pages/LeadsPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 const queryClient = new QueryClient({
@@ -77,56 +80,10 @@ export const App: React.FC = () => {
 
             {/* Remaining Modules Roadmap */}
 
-            <Route
-              path="inbox"
-              element={
-                <PlaceholderPage
-                  title="Facebook Inbox & Messenger"
-                  phase="Phase 6"
-                  description="Official Messenger platform integration with draft replies requiring approval."
-                  highlights={[
-                    "Permitted Messenger conversation retrieval",
-                    "Intent recognition & inquiry categorization",
-                    "AI draft replies generated locally via Ollama",
-                    "Mandatory human approval before message transmission"
-                  ]}
-                />
-              }
-            />
-
-            <Route
-              path="comments"
-              element={
-                <PlaceholderPage
-                  title="Comment Management"
-                  phase="Phase 6"
-                  description="Comment classification (Questions, Inquiries, Complaints, Feedback, Spam) and reply drafting."
-                  highlights={[
-                    "Automatic classification into 7 distinct categories",
-                    "Suggested response drafting",
-                    "Side-by-side comment and proposed reply view",
-                    "Strict human approval prior to publishing replies"
-                  ]}
-                />
-              }
-            />
-
-            <Route
-              path="leads"
-              element={
-                <PlaceholderPage
-                  title="Lead Management"
-                  phase="Phase 6"
-                  description="CRM tracker for customer inquiries, contact details, and conversion follow-ups."
-                  highlights={[
-                    "Automatic lead extraction from permitted chats",
-                    "Inquiry type & product interest tagging",
-                    "Follow-up status tracking (New, Contacted, Qualified, Closed)",
-                    "Strict privacy and local storage"
-                  ]}
-                />
-              }
-            />
+            {/* Phase 6: Audience & Engagement */}
+            <Route path="inbox" element={<MessengerPage />} />
+            <Route path="comments" element={<CommentsPage />} />
+            <Route path="leads" element={<LeadsPage />} />
 
             <Route
               path="analytics"

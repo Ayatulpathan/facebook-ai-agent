@@ -167,3 +167,54 @@ class FacebookStatusResponse(BaseModel):
     permissions: List[Dict[str, Any]]
     last_verified_at: Optional[str] = None
     legal_disclaimer: str
+
+# ----------------- Engagement Schemas (Phase 6) -----------------
+class CommentResponse(BaseModel):
+    id: int
+    post_id: Optional[int] = None
+    meta_post_id: str
+    meta_comment_id: str
+    sender_name: str
+    sender_id: str
+    comment_text: str
+    category: str
+    suggested_reply: str
+    reply_status: str
+    approved_reply_text: str = ""
+    is_lead: bool = False
+    sent_at: Optional[datetime] = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class CommentApproveRequest(BaseModel):
+    reply_text: Optional[str] = None
+
+class MessengerApproveRequest(BaseModel):
+    reply_text: Optional[str] = None
+
+class LeadResponse(BaseModel):
+    id: int
+    customer_name: str
+    facebook_reference: str = ""
+    contact_info: str = ""
+    inquiry_type: str = "General Inquiry"
+    product_interest: str = ""
+    follow_up_status: str = "New"
+    notes: str = ""
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class LeadUpdateRequest(BaseModel):
+    status: Optional[str] = None
+    notes: Optional[str] = None
+    contact_info: Optional[str] = None
+
+class LeadCreateRequest(BaseModel):
+    customer_name: str
+    contact_info: Optional[str] = ""
+    facebook_reference: Optional[str] = ""
+    inquiry_type: Optional[str] = "Manual Entry"
+    product_interest: Optional[str] = ""
+    notes: Optional[str] = ""

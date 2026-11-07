@@ -175,6 +175,26 @@ class PublishedPost(Base):
     permalink_url = Column(String(500), default="")
     published_at = Column(DateTime, default=utc_now, nullable=False)
 
+class FacebookComment(Base):
+    __tablename__ = "facebook_comments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    post_id = Column(Integer, ForeignKey("content.id", ondelete="SET NULL"), nullable=True)
+    meta_post_id = Column(String(100), index=True, default="", nullable=False)
+    meta_comment_id = Column(String(100), unique=True, index=True, nullable=False)
+    sender_name = Column(String(200), default="User", nullable=False)
+    sender_id = Column(String(100), default="", nullable=False)
+    comment_text = Column(Text, nullable=False)
+    category = Column(String(50), default="General Question", index=True, nullable=False)
+    suggested_reply = Column(Text, default="", nullable=False)
+    reply_status = Column(String(50), default="PENDING", index=True, nullable=False) # PENDING, APPROVED, REJECTED, SENT
+    approved_by = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    approved_reply_text = Column(Text, default="", nullable=False)
+    meta_reply_id = Column(String(100), nullable=True)
+    sent_at = Column(DateTime, nullable=True)
+    is_lead = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
+
 class Conversation(Base):
     __tablename__ = "conversations"
 
