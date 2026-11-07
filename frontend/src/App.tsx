@@ -10,6 +10,11 @@ import { AuditLogsPage } from './pages/AuditLogsPage'
 import { AgentsPage } from './pages/AgentsPage'
 import { ResearchPage } from './pages/ResearchPage'
 import { StrategyPage } from './pages/StrategyPage'
+import { ContentStudioPage } from './pages/ContentStudioPage'
+import { GraphicStudioPage } from './pages/GraphicStudioPage'
+import { ReelsStudioPage } from './pages/ReelsStudioPage'
+import { MediaLibraryPage } from './pages/MediaLibraryPage'
+import { CalendarPage } from './pages/CalendarPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 const queryClient = new QueryClient({
@@ -68,78 +73,19 @@ export const App: React.FC = () => {
               }
             />
 
-            <Route
-              path="calendar"
-              element={
-                <PlaceholderPage
-                  title="Content Calendar"
-                  phase="Phase 3"
-                  description="Interactive daily, weekly, and monthly publishing schedule with local timezone synchronization."
-                  highlights={[
-                    "Daily, weekly, and monthly grid views",
-                    "Visual indicator for all 11 lifecycle statuses",
-                    "Drag-and-drop rescheduling",
-                    "Delay detection for computer downtime"
-                  ]}
-                />
-              }
-            />
+            {/* Phase 3: Content Studios & Media */}
+            <Route path="studio" element={<ContentStudioPage />} />
+            <Route path="graphics" element={<GraphicStudioPage />} />
+            <Route path="reels" element={<ReelsStudioPage />} />
+            <Route path="media-library" element={<MediaLibraryPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
 
             {/* Phase 2: Local AI & Specialized Agents */}
             <Route path="research" element={<ResearchPage />} />
             <Route path="strategy" element={<StrategyPage />} />
             <Route path="agents" element={<AgentsPage />} />
 
-            <Route
-              path="studio"
-              element={
-                <PlaceholderPage
-                  title="AI Content Studio"
-                  phase="Phase 3"
-                  description="Multi-lingual (Bangla & English) caption generator with strict anti-hallucination guards."
-                  highlights={[
-                    "Bangla and English natural copy generation",
-                    "Tone, niche, and custom CTA selection",
-                    "Zero price hallucination policy (strict catalog adherence)",
-                    "Hashtags and engaging callouts"
-                  ]}
-                />
-              }
-            />
-
-            <Route
-              path="graphics"
-              element={
-                <PlaceholderPage
-                  title="Graphic Design Studio"
-                  phase="Phase 3"
-                  description="HTML/CSS/SVG-based promotional graphic rendering optimized for 4 GB VRAM."
-                  highlights={[
-                    "No heavy generative diffusion models required",
-                    "Editable promotional templates (Quotes, Price Cards, Sales, Festivals)",
-                    "ImageMagick and SVG canvas rendering",
-                    "Export to PNG and JPEG"
-                  ]}
-                />
-              }
-            />
-
-            <Route
-              path="reels"
-              element={
-                <PlaceholderPage
-                  title="Reels Studio"
-                  phase="Phase 3"
-                  description="Vertical short-form video assembly using FFmpeg and local assets."
-                  highlights={[
-                    "Scene-by-scene script and storyboard generator",
-                    "FFmpeg-powered vertical video (1080x1920) concatenation",
-                    "Subtitles, text overlays, and audio integration",
-                    "Low-resolution preview rendering for 8 GB RAM"
-                  ]}
-                />
-              }
-            />
+            {/* Remaining Modules Roadmap */}
 
             <Route
               path="inbox"
@@ -209,22 +155,7 @@ export const App: React.FC = () => {
               }
             />
 
-            <Route
-              path="media-library"
-              element={
-                <PlaceholderPage
-                  title="Media Asset Library"
-                  phase="Phase 3"
-                  description="Local storage repository for brand logos, product photos, rendered graphics, and clips."
-                  highlights={[
-                    "Organized storage in /data/media/",
-                    "Image and video asset tagging",
-                    "Direct integration into AI Content Studio & Reels Studio",
-                    "File size and resolution inspector"
-                  ]}
-                />
-              }
-            />
+            {/* Phase 6 & 7 Modules */}
 
             {/* Remaining Modules Roadmap */}
 

@@ -163,7 +163,7 @@ export const api = {
     return handleResponse<AuditLogItem[]>(res)
   },
 
-  // ---------------- Phase 2: Local AI Agents ----------------
+  // Phase 2: Local AI Agents
   async getAgentsStatus(): Promise<any> {
     const res = await fetch(`${API_BASE}/agents/status`, {
       headers: getAuthHeaders()
@@ -180,16 +180,7 @@ export const api = {
     return handleResponse<any>(res)
   },
 
-  async generatePost(params: {
-    topic: string
-    niche_id?: number | null
-    post_type?: string
-    language?: string
-    tone?: string
-    custom_cta?: string
-    include_emojis?: boolean
-    save_as_draft?: boolean
-  }): Promise<any> {
+  async generatePost(params: any): Promise<any> {
     const res = await fetch(`${API_BASE}/agents/generate-post`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -198,11 +189,7 @@ export const api = {
     return handleResponse<any>(res)
   },
 
-  async generateStrategy(params: {
-    niche_id: number
-    timeframe?: string
-    goals?: string
-  }): Promise<any> {
+  async generateStrategy(params: any): Promise<any> {
     const res = await fetch(`${API_BASE}/agents/generate-strategy`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -211,10 +198,7 @@ export const api = {
     return handleResponse<any>(res)
   },
 
-  async researchTopics(params: {
-    niche_id: number
-    category?: string
-  }): Promise<any> {
+  async researchTopics(params: any): Promise<any> {
     const res = await fetch(`${API_BASE}/agents/research-topics`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -223,12 +207,7 @@ export const api = {
     return handleResponse<any>(res)
   },
 
-  async saveIdea(params: {
-    niche_id?: number
-    title: string
-    concept: string
-    category: string
-  }): Promise<any> {
+  async saveIdea(params: any): Promise<any> {
     const res = await fetch(`${API_BASE}/agents/save-idea`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -242,5 +221,154 @@ export const api = {
       headers: getAuthHeaders()
     })
     return handleResponse<any[]>(res)
+  },
+
+  // ---------------- Phase 3: Content, Media & Studios ----------------
+  async getContent(statusFilter?: string, nicheId?: number): Promise<any[]> {
+    let url = `${API_BASE}/content/`
+    const params = new URLSearchParams()
+    if (statusFilter) params.append('status_filter', statusFilter)
+    if (nicheId) params.append('niche_id', String(nicheId))
+    if (params.toString()) url += `?${params.toString()}`
+
+    const res = await fetch(url, { headers: getAuthHeaders() })
+    return handleResponse<any[]>(res)
+  },
+
+  async getContentDetail(id: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/content/${id}`, {
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  async createContent(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/content/`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async updateContent(id: number, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/content/${id}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async submitForApproval(id: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/content/${id}/submit-approval`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  async deleteContent(id: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/content/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Calendar
+  async getCalendarEvents(startDate?: string, endDate?: string): Promise<any[]> {
+    let url = `${API_BASE}/calendar/`
+    const params = new URLSearchParams()
+    if (startDate) params.append('start_date', startDate)
+    if (endDate) params.append('end_date', endDate)
+    if (params.toString()) url += `?${params.toString()}`
+
+    const res = await fetch(url, { headers: getAuthHeaders() })
+    return handleResponse<any[]>(res)
+  },
+
+  async reschedulePost(contentId: number, scheduledFor: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/calendar/reschedule`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ content_id: contentId, scheduled_for: scheduledFor })
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Media Library
+  async uploadMedia(formData: FormData): Promise<any> {
+    const token = localStorage.getItem('access_token')
+    const headers: HeadersInit = {}
+    if (token) headers['Authorization'] = `Bearer ${token}`
+
+    const res = await fetch(`${API_BASE}/media/upload`, {
+      method: 'POST',
+      headers: headers,
+      body: formData
+    })
+    return handleResponse<any>(res)
+  },
+
+  async getMedia(mediaType?: string): Promise<any[]> {
+    const url = mediaType ? `${API_BASE}/media/?media_type=${mediaType}` : `${API_BASE}/media/`
+    const res = await fetch(url, { headers: getAuthHeaders() })
+    return handleResponse<any[]>(res)
+  },
+
+  async deleteMedia(id: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/media/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Graphic Studio
+  async getGraphicTemplates(): Promise<any> {
+    const res = await fetch(`${API_BASE}/graphics/templates`, {
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  async renderGraphic(data: {
+    template: string
+    data: Record<string, string>
+    primary_color?: string
+    secondary_color?: string
+    format?: string
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/graphics/render`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Reels Studio
+  async generateReelScript(data: { topic: string; niche_id?: number; duration_seconds?: number }): Promise<any> {
+    const res = await fetch(`${API_BASE}/reels/script`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async renderReel(data: {
+    title: string
+    subtitle: string
+    duration_seconds?: number
+    preview_mode?: boolean
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/reels/render`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    return handleResponse<any>(res)
   }
 }
