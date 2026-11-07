@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# SQLite Database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+data/database/*.db
+data/database/*.db-wal
+data/database/*.db-shm
+
+# Media uploads & exports
+data/media/*
+!data/media/.gitkeep
+data/exports/*
+!data/exports/.gitkeep
+data/backups/*
+!data/backups/.gitkeep
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Environment & Secrets
+.env
+.env.production
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
