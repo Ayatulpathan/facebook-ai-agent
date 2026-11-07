@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
 from app.database.session import engine, Base, SessionLocal
-from app.api.v1 import auth, brand, niches, dashboard, audit
+from app.api.v1 import auth, brand, niches, dashboard, audit, agents
 from app.services.auth_service import init_admin_user
 from app.services.brand_service import init_brand_profile
 from app.services.niche_service import init_sample_niches
@@ -59,6 +59,7 @@ app.include_router(brand.router, prefix="/api/v1")
 app.include_router(niches.router, prefix="/api/v1")
 app.include_router(dashboard.router, prefix="/api/v1")
 app.include_router(audit.router, prefix="/api/v1")
+app.include_router(agents.router, prefix="/api/v1")
 
 @app.get("/health", tags=["Health"])
 def health_check():

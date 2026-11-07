@@ -161,5 +161,86 @@ export const api = {
       headers: getAuthHeaders()
     })
     return handleResponse<AuditLogItem[]>(res)
+  },
+
+  // ---------------- Phase 2: Local AI Agents ----------------
+  async getAgentsStatus(): Promise<any> {
+    const res = await fetch(`${API_BASE}/agents/status`, {
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  async switchModel(modelName: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/agents/switch-model`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ model_name: modelName })
+    })
+    return handleResponse<any>(res)
+  },
+
+  async generatePost(params: {
+    topic: string
+    niche_id?: number | null
+    post_type?: string
+    language?: string
+    tone?: string
+    custom_cta?: string
+    include_emojis?: boolean
+    save_as_draft?: boolean
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/agents/generate-post`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(params)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async generateStrategy(params: {
+    niche_id: number
+    timeframe?: string
+    goals?: string
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/agents/generate-strategy`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(params)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async researchTopics(params: {
+    niche_id: number
+    category?: string
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/agents/research-topics`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(params)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async saveIdea(params: {
+    niche_id?: number
+    title: string
+    concept: string
+    category: string
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE}/agents/save-idea`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(params)
+    })
+    return handleResponse<any>(res)
+  },
+
+  async getAgentRuns(limit: number = 20): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/agents/runs?limit=${limit}`, {
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any[]>(res)
   }
 }

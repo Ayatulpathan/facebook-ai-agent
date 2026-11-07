@@ -7,6 +7,9 @@ import { DashboardPage } from './pages/DashboardPage'
 import { BrandProfilePage } from './pages/BrandProfilePage'
 import { NichesPage } from './pages/NichesPage'
 import { AuditLogsPage } from './pages/AuditLogsPage'
+import { AgentsPage } from './pages/AgentsPage'
+import { ResearchPage } from './pages/ResearchPage'
+import { StrategyPage } from './pages/StrategyPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 const queryClient = new QueryClient({
@@ -82,39 +85,10 @@ export const App: React.FC = () => {
               }
             />
 
-            <Route
-              path="research"
-              element={
-                <PlaceholderPage
-                  title="Research Agent"
-                  phase="Phase 2"
-                  description="Autonomous niche trend discovery, seasonal event tracking, and customer question analysis."
-                  highlights={[
-                    "Publicly accessible topic discovery",
-                    "Seasonal occasion & festival suggestions (Bangla & English)",
-                    "Customer interest & FAQ mining",
-                    "Clear labeling of AI-generated ideas vs verified facts"
-                  ]}
-                />
-              }
-            />
-
-            <Route
-              path="strategy"
-              element={
-                <PlaceholderPage
-                  title="Content Strategy Agent"
-                  phase="Phase 2"
-                  description="High-converting monthly and weekly editorial plans tailored to your configured niches."
-                  highlights={[
-                    "Multi-niche strategy generation",
-                    "Educational, promotional, and engagement campaign mixes",
-                    "Target audience demographic resonance",
-                    "Fully editable suggestions"
-                  ]}
-                />
-              }
-            />
+            {/* Phase 2: Local AI & Specialized Agents */}
+            <Route path="research" element={<ResearchPage />} />
+            <Route path="strategy" element={<StrategyPage />} />
+            <Route path="agents" element={<AgentsPage />} />
 
             <Route
               path="studio"
@@ -252,22 +226,7 @@ export const App: React.FC = () => {
               }
             />
 
-            <Route
-              path="agents"
-              element={
-                <PlaceholderPage
-                  title="AI Agent Master Orchestrator"
-                  phase="Phase 2"
-                  description="Monitor and configure the 11 specialized local AI agents running on Ollama."
-                  highlights={[
-                    "Master Orchestrator coordinating all 11 sub-agents",
-                    "Local model selector: qwen2.5:1.5b (default), qwen2.5:0.5b (fallback)",
-                    "Token consumption, latency, and context window monitor",
-                    "Strict zero-cost external API gatekeeper"
-                  ]}
-                />
-              }
-            />
+            {/* Remaining Modules Roadmap */}
 
             <Route
               path="notifications"
