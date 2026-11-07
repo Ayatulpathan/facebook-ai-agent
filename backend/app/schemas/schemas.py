@@ -218,3 +218,21 @@ class LeadCreateRequest(BaseModel):
     inquiry_type: Optional[str] = "Manual Entry"
     product_interest: Optional[str] = ""
     notes: Optional[str] = ""
+
+# ----------------- Phase 7 Schemas -----------------
+class NotificationResponse(BaseModel):
+    id: int
+    title: str
+    message: str
+    severity: str
+    is_read: bool
+    link: str = ""
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+class BackupItemResponse(BaseModel):
+    filename: str
+    path: str
+    size_kb: float
+    created_at: str

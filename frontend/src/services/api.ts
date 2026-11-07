@@ -572,6 +572,144 @@ export const api = {
 
   getLeadsCsvDownloadUrl(): string {
     return `${API_BASE}/leads/export/csv`
+  },
+
+  // Phase 7: Analytics
+  async getAnalyticsOverview(days: number = 30): Promise<AnalyticsOverview> {
+    const res = await fetch(`${API_BASE}/analytics/overview?days=${days}`, { headers: getAuthHeaders() })
+    return handleResponse<AnalyticsOverview>(res)
+  },
+
+  getAnalyticsCsvDownloadUrl(days: number = 30): string {
+    return `${API_BASE}/analytics/export/csv?days=${days}`
+  },
+
+  // Phase 7: Notifications
+  async getNotifications(unreadOnly: boolean = false): Promise<NotificationItem[]> {
+    const res = await fetch(`${API_BASE}/notifications/?unread_only=${unreadOnly}`, { headers: getAuthHeaders() })
+    return handleResponse<NotificationItem[]>(res)
+  },
+
+  async getUnreadNotificationCount(): Promise<{ unread_count: number }> {
+    const res = await fetch(`${API_BASE}/notifications/unread-count`, { headers: getAuthHeaders() })
+    return handleResponse<{ unread_count: number }>(res)
+  },
+
+  async markNotificationRead(id: number): Promise<NotificationItem> {
+    const res = await fetch(`${API_BASE}/notifications/${id}/read`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<NotificationItem>(res)
+  },
+
+  async markAllNotificationsRead(): Promise<any> {
+    const res = await fetch(`${API_BASE}/notifications/read-all`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  // Phase 7: Settings & Backups
+  async getSystemSettings(): Promise<SystemSettings> {
+    const res = await fetch(`${API_BASE}/settings/`, { headers: getAuthHeaders() })
+    return handleResponse<SystemSettings>(res)
+  },
+
+  async getBackups(): Promise<BackupItem[]> {
+    const res = await fetch(`${API_BASE}/settings/backups`, { headers: getAuthHeaders() })
+    return handleResponse<BackupItem[]>(res)
+  },
+
+  async createBackup(): Promise<BackupItem> {
+    const res = await fetch(`${API_BASE}/settings/backups/create`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<BackupItem>(res)
+  },
+
+  async restoreBackup(filename: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/settings/backups/${encodeURIComponent(filename)}/restore`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  async triggerSchedulerTick(): Promise<any> {
+    const res = await fetch(`${API_BASE}/settings/scheduler-tick`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  }
+}
+
+export interface AnalyticsOverview {
+  is_mock_mode: boolean
+  days: number
+  metrics: {
+    total_impressions: number
+    engaged_users: number
+    post_engagements: number
+    video_views: number
+    total_published_posts: number
+    followers_count: number
+    engagement_rate_pct: number
+  }
+  daily_trends: Array<{
+    date: string
+    impressions: number
+    engagements: number
+  }>
+  recent_posts: Array<{
+    id: number
+    title: string
+    meta_post_id: string
+    permalink_url: string
+    published_at: string
+    estimated_reach: number
+    estimated_reactions: number
+  }>
+  data_source: string
+}
+
+export interface NotificationItem {
+  id: number
+  title: string
+  message: string
+  severity: 'info' | 'warning' | 'error' | 'success' | string
+  is_read: boolean
+  link: string
+  created_at: string
+}
+
+export interface BackupItem {
+  filename: string
+  path: string
+  size_kb: number
+  created_at: string
+}
+
+export interface SystemSettings {
+  project_name: string
+  version: string
+  environment: string
+  database_path: string
+  backup_dir: string
+  media_dir: string
+  ollama_base_url: string
+  default_model: string
+  fallback_model: string
+  global_pause: boolean
+  backups_count: number
+  scheduler_instructions: {
+    task_name: string
+    schedule: string
+    powershell_command: string
+    zero_cost_note: string
   }
 }
 

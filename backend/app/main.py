@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.database.session import engine, Base, SessionLocal, apply_sqlite_migrations
 from app.api.v1 import (
     auth, brand, niches, dashboard, audit, agents, media, graphics, reels, content, calendar,
-    approvals, queue, facebook, comments, messenger, leads
+    approvals, queue, facebook, comments, messenger, leads, analytics, notifications, settings_admin
 )
 from app.services.auth_service import init_admin_user
 from app.services.brand_service import init_brand_profile
@@ -75,6 +75,9 @@ app.include_router(facebook.router, prefix="/api/v1")
 app.include_router(comments.router, prefix="/api/v1")
 app.include_router(messenger.router, prefix="/api/v1")
 app.include_router(leads.router, prefix="/api/v1")
+app.include_router(analytics.router, prefix="/api/v1")
+app.include_router(notifications.router, prefix="/api/v1")
+app.include_router(settings_admin.router, prefix="/api/v1")
 
 @app.get("/health", tags=["Health"])
 def health_check():

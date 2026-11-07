@@ -20,7 +20,9 @@ import { FacebookPage } from './pages/FacebookPage'
 import { CommentsPage } from './pages/CommentsPage'
 import { MessengerPage } from './pages/MessengerPage'
 import { LeadsPage } from './pages/LeadsPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
+import { AnalyticsPage } from './pages/AnalyticsPage'
+import { NotificationsPage } from './pages/NotificationsPage'
+import { SettingsPage } from './pages/SettingsPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,60 +87,10 @@ export const App: React.FC = () => {
             <Route path="comments" element={<CommentsPage />} />
             <Route path="leads" element={<LeadsPage />} />
 
-            <Route
-              path="analytics"
-              element={
-                <PlaceholderPage
-                  title="Analytics & Page Insights"
-                  phase="Phase 7"
-                  description="Real page performance metrics from official Meta Graph API with CSV export."
-                  highlights={[
-                    "Official Reach, Impressions, Engagement, and Video Views",
-                    "Zero fake or fabricated metrics policy",
-                    "Date range filtering and CSV report exports",
-                    "Post-by-post performance analysis"
-                  ]}
-                />
-              }
-            />
-
-            {/* Phase 6 & 7 Modules */}
-
-            {/* Remaining Modules Roadmap */}
-
-            <Route
-              path="notifications"
-              element={
-                <PlaceholderPage
-                  title="Notifications & System Alerts"
-                  phase="Phase 7"
-                  description="Real-time alerts for pending approvals, scheduled post reminders, and system events."
-                  highlights={[
-                    "Pending approval reminders",
-                    "Token expiry warnings",
-                    "Local AI unavailable notices",
-                    "In-app and optional browser notifications"
-                  ]}
-                />
-              }
-            />
-
-            <Route
-              path="settings"
-              element={
-                <PlaceholderPage
-                  title="Settings & Local Backups"
-                  phase="Phase 7 / Phase 8"
-                  description="System configuration, SQLite automated backups, and Windows Task Scheduler integration."
-                  highlights={[
-                    "Automated SQLite database backups to /data/backups/",
-                    "One-click database restore",
-                    "Windows Task Scheduler guide and configuration",
-                    "Global Pause kill-switch configuration"
-                  ]}
-                />
-              }
-            />
+            {/* Phase 7: Analytics, Notifications & Settings */}
+            <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
