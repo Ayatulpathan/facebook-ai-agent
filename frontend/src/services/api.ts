@@ -425,5 +425,93 @@ export const api = {
       headers: getAuthHeaders()
     })
     return handleResponse<any>(res)
+  },
+
+  // Phase 5: Facebook Page Integration
+  async getFacebookStatus(): Promise<FacebookStatus> {
+    const res = await fetch(`${API_BASE}/facebook/status`, { headers: getAuthHeaders() })
+    return handleResponse<FacebookStatus>(res)
+  },
+
+  async updateFacebookConfig(payload: FacebookConfigPayload): Promise<FacebookStatus> {
+    const res = await fetch(`${API_BASE}/facebook/config`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload)
+    })
+    return handleResponse<FacebookStatus>(res)
+  },
+
+  async verifyFacebookConnection(): Promise<FacebookStatus> {
+    const res = await fetch(`${API_BASE}/facebook/verify`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<FacebookStatus>(res)
+  },
+
+  async disconnectFacebookPage(): Promise<FacebookStatus> {
+    const res = await fetch(`${API_BASE}/facebook/disconnect`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<FacebookStatus>(res)
+  },
+
+  async getMetaOAuthUrl(redirectUri?: string): Promise<{ oauth_url: string }> {
+    const url = redirectUri ? `${API_BASE}/facebook/oauth-url?redirect_uri=${encodeURIComponent(redirectUri)}` : `${API_BASE}/facebook/oauth-url`
+    const res = await fetch(url, { headers: getAuthHeaders() })
+    return handleResponse<{ oauth_url: string }>(res)
+  },
+
+  async publishApprovedNow(contentId: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/facebook/publish-now/${contentId}`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
   }
+}
+
+export interface FacebookPermission {
+  key: string
+  name: string
+  description: string
+  required: boolean
+  impact_if_missing: string
+  is_granted: boolean
+}
+
+export interface FacebookStatus {
+  is_connected: boolean
+  is_mock_mode: boolean
+  page_id: string | null
+  page_name: string | null
+  category: string
+  followers_count: number
+  avatar_url: string
+  status: string
+  has_token: boolean
+  app_id: string | null
+  app_secret_configured: boolean
+  token_status: 'VALID' | 'EXPIRING_SOON' | 'EXPIRED' | 'DEGRADED' | string
+  token_expires_at: string | null
+  expires_in_days: number | null
+  permissions_summary: {
+    total: number
+    granted: number
+    missing: number
+    all_required_granted: boolean
+  }
+  permissions: FacebookPermission[]
+  last_verified_at: string | null
+  legal_disclaimer: string
+}
+
+export interface FacebookConfigPayload {
+  page_id?: string
+  access_token?: string
+  app_id?: string
+  app_secret?: string
+  is_mock_mode?: boolean
 }

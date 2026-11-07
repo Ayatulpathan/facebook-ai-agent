@@ -139,3 +139,31 @@ class AuditLogResponse(BaseModel):
 class GenericMessage(BaseModel):
     message: str
     success: bool = True
+
+# ----------------- Facebook Integration Schemas -----------------
+class FacebookConfigRequest(BaseModel):
+    page_id: Optional[str] = None
+    access_token: Optional[str] = None
+    app_id: Optional[str] = None
+    app_secret: Optional[str] = None
+    is_mock_mode: Optional[bool] = None
+
+class FacebookStatusResponse(BaseModel):
+    is_connected: bool
+    is_mock_mode: bool
+    page_id: Optional[str] = None
+    page_name: Optional[str] = None
+    category: str = "Business Page"
+    followers_count: int = 0
+    avatar_url: str = ""
+    status: str
+    has_token: bool
+    app_id: Optional[str] = None
+    app_secret_configured: bool = False
+    token_status: str
+    token_expires_at: Optional[str] = None
+    expires_in_days: Optional[int] = None
+    permissions_summary: Dict[str, Any]
+    permissions: List[Dict[str, Any]]
+    last_verified_at: Optional[str] = None
+    legal_disclaimer: str

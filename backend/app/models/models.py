@@ -66,7 +66,14 @@ class PageConnection(Base):
     access_token_encrypted = Column(Text, nullable=True)
     token_expires_at = Column(DateTime, nullable=True)
     permissions_granted = Column(Text, default="[]", nullable=False) # JSON list
+    missing_permissions = Column(Text, default="[]", nullable=False) # JSON list
     status = Column(String(50), default="disconnected", nullable=False) # connected, disconnected, expired, error
+    app_id = Column(String(100), nullable=True)
+    app_secret_masked = Column(String(100), nullable=True)
+    category = Column(String(100), default="Business Page", nullable=False)
+    followers_count = Column(Integer, default=0, nullable=False)
+    avatar_url = Column(String(500), default="", nullable=False)
+    is_mock_mode = Column(Boolean, default=True, nullable=False)
     connected_at = Column(DateTime, nullable=True)
     last_verified_at = Column(DateTime, nullable=True)
 

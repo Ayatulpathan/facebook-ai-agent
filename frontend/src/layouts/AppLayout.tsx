@@ -74,6 +74,7 @@ export const AppLayout: React.FC = () => {
       items: [
         { name: "Dashboard", href: "/", icon: LayoutDashboard },
         { name: "Brand Profile", href: "/brand", icon: Building2 },
+        { name: "Facebook Page", href: "/facebook", icon: Share2 },
         { name: "Niches", href: "/niches", icon: Layers },
         {
           name: "Approval Center",

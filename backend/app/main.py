@@ -4,10 +4,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.core.config import settings
-from app.database.session import engine, Base, SessionLocal
+from app.database.session import engine, Base, SessionLocal, apply_sqlite_migrations
 from app.api.v1 import (
     auth, brand, niches, dashboard, audit, agents, media, graphics, reels, content, calendar,
-    approvals, queue
+    approvals, queue, facebook
 )
 from app.services.auth_service import init_admin_user
 from app.services.brand_service import init_brand_profile
@@ -18,6 +18,7 @@ from app.services.audit_service import log_audit
 async def lifespan(app: FastAPI):
     # Initialize SQLite database schema
     Base.metadata.create_all(bind=engine)
+    apply_sqlite_migrations(engine)
     
     # Initialize seed records
     db = SessionLocal()
@@ -70,6 +71,7 @@ app.include_router(content.router, prefix="/api/v1")
 app.include_router(calendar.router, prefix="/api/v1")
 app.include_router(approvals.router, prefix="/api/v1")
 app.include_router(queue.router, prefix="/api/v1")
+app.include_router(facebook.router, prefix="/api/v1")
 
 @app.get("/health", tags=["Health"])
 def health_check():

@@ -16,6 +16,7 @@ import { ReelsStudioPage } from './pages/ReelsStudioPage'
 import { MediaLibraryPage } from './pages/MediaLibraryPage'
 import { CalendarPage } from './pages/CalendarPage'
 import { ApprovalCenterPage } from './pages/ApprovalCenterPage'
+import { FacebookPage } from './pages/FacebookPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 const queryClient = new QueryClient({
@@ -58,6 +59,9 @@ export const App: React.FC = () => {
 
             {/* Phase 4: Approval Center */}
             <Route path="approvals" element={<ApprovalCenterPage />} />
+
+            {/* Phase 5: Facebook Page Integration */}
+            <Route path="facebook" element={<FacebookPage />} />
 
             {/* Phase 3: Content Studios & Media */}
             <Route path="studio" element={<ContentStudioPage />} />
