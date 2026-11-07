@@ -370,5 +370,60 @@ export const api = {
       body: JSON.stringify(data)
     })
     return handleResponse<any>(res)
+  },
+
+  // ---------------- Phase 4: Approval Center & Queue ----------------
+  async getPendingApprovals(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/approvals/pending`, {
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any[]>(res)
+  },
+
+  async approveContent(contentId: number, versionNum: number, decisionNotes?: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/approvals/${contentId}/approve`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ version_num: versionNum, decision_notes: decisionNotes })
+    })
+    return handleResponse<any>(res)
+  },
+
+  async rejectContent(contentId: number, versionNum: number, rejectionReason: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/approvals/${contentId}/reject`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ version_num: versionNum, rejection_reason: rejectionReason })
+    })
+    return handleResponse<any>(res)
+  },
+
+  async getApprovalHistory(limit: number = 50): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/approvals/history?limit=${limit}`, {
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any[]>(res)
+  },
+
+  async getPublishingQueue(state?: string): Promise<any[]> {
+    const url = state ? `${API_BASE}/queue/?state=${state}` : `${API_BASE}/queue/`
+    const res = await fetch(url, { headers: getAuthHeaders() })
+    return handleResponse<any[]>(res)
+  },
+
+  async cancelQueueJob(queueId: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/queue/${queueId}/cancel`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
+  },
+
+  async retryQueueJob(queueId: number): Promise<any> {
+    const res = await fetch(`${API_BASE}/queue/${queueId}/retry`, {
+      method: 'POST',
+      headers: getAuthHeaders()
+    })
+    return handleResponse<any>(res)
   }
 }

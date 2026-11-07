@@ -15,6 +15,7 @@ import { GraphicStudioPage } from './pages/GraphicStudioPage'
 import { ReelsStudioPage } from './pages/ReelsStudioPage'
 import { MediaLibraryPage } from './pages/MediaLibraryPage'
 import { CalendarPage } from './pages/CalendarPage'
+import { ApprovalCenterPage } from './pages/ApprovalCenterPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 const queryClient = new QueryClient({
@@ -55,23 +56,8 @@ export const App: React.FC = () => {
             <Route path="niches" element={<NichesPage />} />
             <Route path="audit-logs" element={<AuditLogsPage />} />
 
-            {/* Structured Placeholders for Subsequent Phases */}
-            <Route
-              path="approvals"
-              element={
-                <PlaceholderPage
-                  title="Approval Center"
-                  phase="Phase 4"
-                  description="Human-in-the-loop verification gate for all posts, Reels, and customer replies."
-                  highlights={[
-                    "Mandatory approval barrier before any publishing or sending action",
-                    "Cryptographic approval records with version tracking",
-                    "Automatic invalidation of approvals if content is modified",
-                    "One-click Approve, Reject, or Edit workflows"
-                  ]}
-                />
-              }
-            />
+            {/* Phase 4: Approval Center */}
+            <Route path="approvals" element={<ApprovalCenterPage />} />
 
             {/* Phase 3: Content Studios & Media */}
             <Route path="studio" element={<ContentStudioPage />} />
