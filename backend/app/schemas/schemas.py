@@ -166,6 +166,7 @@ class FacebookStatusResponse(BaseModel):
     permissions_summary: Dict[str, Any]
     permissions: List[Dict[str, Any]]
     last_verified_at: Optional[str] = None
+    last_error: Optional[str] = None
     legal_disclaimer: str
 
 # ----------------- Engagement Schemas (Phase 6) -----------------

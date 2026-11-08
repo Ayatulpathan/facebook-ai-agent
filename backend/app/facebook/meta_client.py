@@ -148,6 +148,9 @@ class LiveMetaClient(BaseMetaClient):
         params = {"fields": "id,name,category,fan_count,about,picture{url}"}
         with httpx.Client(timeout=self.timeout) as client:
             resp = client.get(url, headers=self._headers(), params=params)
+            if resp.status_code == 400 and "(#100)" in resp.text:
+                # Graceful fallback if certain fields (e.g. category/fan_count) are unsupported by the node type
+                resp = client.get(url, headers=self._headers(), params={"fields": "id,name,picture{url}"})
             data = self._handle_response(resp)
             picture_url = ""
             if "picture" in data and "data" in data["picture"]:

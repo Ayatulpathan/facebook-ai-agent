@@ -103,6 +103,7 @@ def get_facebook_status(db: Session) -> Dict[str, Any]:
         },
         "permissions": permissions_details,
         "last_verified_at": conn.last_verified_at.isoformat() if conn.last_verified_at else None,
+        "last_error": conn.last_error,
         "legal_disclaimer": "Meta Graph API access is subject to Meta's review, policies, and permissions. All tokens remain stored exclusively on your local machine."
     }
 
@@ -127,6 +128,7 @@ def update_facebook_config(
             conn.permissions_granted = json.dumps(list(REQUIRED_PERMISSIONS.keys()))
             conn.missing_permissions = json.dumps([])
             conn.token_expires_at = datetime.now(timezone.utc) + timedelta(days=58)
+            conn.last_error = None
 
     if app_id is not None:
         conn.app_id = app_id.strip()
@@ -190,6 +192,7 @@ def verify_facebook_connection(db: Session, actor: str = "system") -> Dict[str, 
         conn.permissions_granted = json.dumps(token_info.get("permissions_granted", []))
         conn.missing_permissions = json.dumps(token_info.get("missing_permissions", []))
         conn.status = "connected"
+        conn.last_error = None
         conn.last_verified_at = datetime.now(timezone.utc)
         
         if conn.is_mock_mode:
@@ -199,8 +202,13 @@ def verify_facebook_connection(db: Session, actor: str = "system") -> Dict[str, 
         db.refresh(conn)
 
     except Exception as e:
-        logger.error(f"Facebook verification failed: {e}")
+        err_msg = str(e)
+        logger.error(f"Facebook verification failed: {err_msg}")
         conn.status = "error"
+        if "expired" in err_msg.lower() or "session has expired" in err_msg.lower():
+            conn.status = "expired"
+            conn.token_expires_at = datetime.now(timezone.utc)
+        conn.last_error = err_msg
         db.commit()
 
     return get_facebook_status(db)

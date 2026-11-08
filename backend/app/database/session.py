@@ -36,7 +36,8 @@ def apply_sqlite_migrations(eng):
             "category": "VARCHAR(100) DEFAULT 'Business Page'",
             "followers_count": "INTEGER DEFAULT 0",
             "avatar_url": "VARCHAR(500) DEFAULT ''",
-            "is_mock_mode": "BOOLEAN DEFAULT 1"
+            "is_mock_mode": "BOOLEAN DEFAULT 1",
+            "last_error": "TEXT DEFAULT ''"
         }
         
         for col_name, col_type in column_defs.items():

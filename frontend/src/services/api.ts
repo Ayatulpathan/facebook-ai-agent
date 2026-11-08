@@ -826,6 +826,7 @@ export interface FacebookStatus {
   }
   permissions: FacebookPermission[]
   last_verified_at: string | null
+  last_error?: string | null
   legal_disclaimer: string
 }
 

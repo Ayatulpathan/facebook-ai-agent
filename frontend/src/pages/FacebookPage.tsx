@@ -159,6 +159,32 @@ export const FacebookPage: React.FC = () => {
         </div>
       )}
 
+      {/* Meta API Error & Guidance Banner */}
+      {(status?.last_error || status?.status === 'error' || status?.status === 'expired') && (
+        <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 flex flex-col gap-2">
+          <div className="flex items-start space-x-3">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-bold text-amber-900 dark:text-amber-100">
+                {status?.status === 'expired' || status?.last_error?.toLowerCase().includes('expired')
+                  ? 'Meta Access Token Has Expired'
+                  : 'Meta Graph API Error Detected'}
+              </h4>
+              <p className="text-xs text-amber-800 dark:text-amber-300 mt-1 font-mono break-all">
+                {status?.last_error || 'Your Meta Access Token is invalid or has expired. Standard Graph API Explorer tokens expire after 1–2 hours.'}
+              </p>
+            </div>
+          </div>
+          <div className="mt-2 text-xs text-amber-900 dark:text-amber-200 bg-amber-100/60 dark:bg-amber-900/40 p-3 rounded-lg flex flex-col gap-1.5">
+            <p className="font-semibold">💡 Quick Resolution:</p>
+            <p>1. Open <a href="https://developers.facebook.com/tools/explorer" target="_blank" rel="noreferrer" className="underline font-bold text-blue-600 dark:text-blue-400">Meta Graph API Explorer</a> and click <strong>Generate Access Token</strong>.</p>
+            <p>2. In the <em>User or Page</em> dropdown, switch from "User Token" to your actual <strong>Facebook Page ({status?.page_name || 'New page'})</strong> to get a Page Token.</p>
+            <p>3. Paste the new token below, click <strong>Save Configuration</strong>, and then <strong>Verify Permissions</strong>.</p>
+            <p>4. <em>For a permanent token:</em> Create a System User at <a href="https://business.facebook.com/settings/system-users" target="_blank" rel="noreferrer" className="underline font-bold text-blue-600 dark:text-blue-400">business.facebook.com</a> with Page Admin access.</p>
+          </div>
+        </div>
+      )}
+
       {/* Connection & Page Overview Card */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Page Identity */}

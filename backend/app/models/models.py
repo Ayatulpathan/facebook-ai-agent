@@ -74,6 +74,7 @@ class PageConnection(Base):
     followers_count = Column(Integer, default=0, nullable=False)
     avatar_url = Column(String(500), default="", nullable=False)
     is_mock_mode = Column(Boolean, default=True, nullable=False)
+    last_error = Column(Text, default="", nullable=True)
     connected_at = Column(DateTime, nullable=True)
     last_verified_at = Column(DateTime, nullable=True)
 
